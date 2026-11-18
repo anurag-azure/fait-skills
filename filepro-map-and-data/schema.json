@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/filepro-map-and-data/schema.json",
+  "title": "Physical Map & Data Profile Analysis",
+  "type": "object",
+  "required": ["table", "record_length", "field_count", "entities", "repeating_groups", "data_quality_notes", "unresolved_edits"],
+  "properties": {
+    "table": { "type": "string" },
+    "record_length": { "type": "integer", "minimum": 1 },
+    "field_count": { "type": "integer", "minimum": 1 },
+    "active_record_sample": { "type": "object" },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entity_name", "fields"],
+        "properties": {
+          "entity_name": { "type": "string" },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["number", "label", "length", "edit", "business_meaning", "evidence"],
+              "properties": {
+                "number": { "type": "integer" },
+                "label": { "type": "string" },
+                "length": { "type": "integer" },
+                "edit": { "type": "string" },
+                "edit_kind": { "type": "string" },
+                "fill_rate": { "type": ["number", "null"] },
+                "business_meaning": { "type": "string" },
+                "evidence": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "repeating_groups": { "type": "array" },
+    "data_quality_notes": { "type": "array" },
+    "unresolved_edits": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

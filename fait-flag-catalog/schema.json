@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/fait-flag-catalog/schema.json",
+  "title": "PSA Deliverable #4 Flag Field Usage Catalog",
+  "type": "object",
+  "required": ["drop_id", "timebox_days", "flags", "excluded_false_positives"],
+  "properties": {
+    "drop_id": { "type": "string" },
+    "timebox_days": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "table", "field_or_var", "category", "coverage_status", "business_purpose", "reads", "writes", "evidence"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^FLG-[A-Z0-9]+-\\d{3}$" },
+          "table": { "type": "string" },
+          "field_or_var": { "type": "string" },
+          "category": { "type": "string", "enum": ["explicit_flag_field", "behavioral_indicator", "dim_line_flag", "process_variable_flag"] },
+          "coverage_status": { "type": "string", "enum": ["documented_from_code", "partial_drop_only", "pending_missing_processes"] },
+          "allowed_values": { "type": "array", "items": { "type": "string" } },
+          "business_purpose": { "type": "string" },
+          "reads": { "type": "array", "items": { "type": "string" } },
+          "writes": { "type": "array", "items": { "type": "string" } },
+          "downstream_effects": { "type": "array", "items": { "type": "string" } },
+          "evidence": { "type": "array", "minItems": 1 }
+        }
+      }
+    },
+    "excluded_false_positives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["symbol", "actual_purpose", "evidence"],
+        "properties": {
+          "symbol": { "type": "string" },
+          "actual_purpose": { "type": "string" },
+          "evidence": { "type": "array" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

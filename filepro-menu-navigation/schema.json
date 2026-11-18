@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/filepro-menu-navigation/schema.json",
+  "title": "filePro Menu & CLI Entrypoint Navigation",
+  "type": "object",
+  "required": ["menus_available_in_drop", "entrypoints", "dispatch_edges"],
+  "properties": {
+    "menus_available_in_drop": { "type": "boolean" },
+    "entrypoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "binary_or_command", "target_table", "flags", "evidence"],
+        "properties": {
+          "name": { "type": "string" },
+          "binary_or_command": { "type": "string" },
+          "target_table": { "type": "string" },
+          "screen": { "type": ["string", "null"] },
+          "input_proc": { "type": ["string", "null"] },
+          "automatic_proc": { "type": ["string", "null"] },
+          "flags": { "type": "array", "items": { "type": "string" } },
+          "mode": { "type": "string", "enum": ["interactive", "unattended_batch", "hybrid"] },
+          "evidence": { "type": "array" }
+        }
+      }
+    },
+    "dispatch_edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "mechanism", "evidence"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "mechanism": { "type": "string", "enum": ["menu_choice", "chain", "call", "pushkey", "system_cli", "screen_key"] },
+          "evidence": { "type": "array" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

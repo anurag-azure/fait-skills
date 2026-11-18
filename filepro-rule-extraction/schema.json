@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/filepro-rule-extraction/schema.json",
+  "title": "Extracted Business Rules & Findings Part Output",
+  "type": "object",
+  "required": ["chunk_id", "module", "covered_labels", "rules", "findings"],
+  "properties": {
+    "chunk_id": { "type": "string" },
+    "module": { "type": "string" },
+    "covered_labels": { "type": "array", "items": { "type": "string" } },
+    "no_rule_labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "reason"],
+        "properties": { "label": { "type": "string" }, "reason": { "type": "string" } }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "capability", "type", "statement", "conditions", "outcome", "fields", "evidence", "confidence"],
+        "properties": {
+          "id": { "type": "string" },
+          "capability": { "type": "string" },
+          "type": { "type": "string", "enum": ["validation", "calculation", "selection", "defaulting", "routing", "authorization", "integration", "state-change"] },
+          "statement": { "type": "string" },
+          "conditions": { "type": "array", "items": { "type": "string" } },
+          "outcome": { "type": "string" },
+          "fields": { "type": "array", "items": { "type": "string" } },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["ref", "quote"],
+              "properties": { "ref": { "type": "string" }, "quote": { "type": "string", "minLength": 1 } }
+            }
+          },
+          "confidence": { "type": "string", "enum": ["observed", "inferred"] },
+          "kt_refs": { "type": "array", "items": { "type": "string" } },
+          "open_question": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "severity", "category", "statement", "evidence", "question_for_client"],
+        "properties": {
+          "id": { "type": "string" },
+          "severity": { "type": "string", "enum": ["info", "question", "likely-bug", "risk"] },
+          "category": { "type": "string" },
+          "statement": { "type": "string" },
+          "evidence": { "type": "array", "minItems": 1 },
+          "question_for_client": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

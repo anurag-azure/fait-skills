@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/fait-domain-glossary/schema.json",
+  "title": "Domain Term Mapping & Normalization",
+  "type": "object",
+  "required": ["terms_used"],
+  "properties": {
+    "terms_used": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["legacy_token", "canonical_business_term", "definition"],
+        "properties": {
+          "legacy_token": { "type": "string" },
+          "canonical_business_term": { "type": "string" },
+          "definition": { "type": "string" },
+          "contains_phi": { "type": "boolean" },
+          "source_ref": { "type": "string" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

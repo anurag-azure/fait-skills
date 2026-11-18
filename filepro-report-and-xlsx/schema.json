@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/filepro-report-and-xlsx/schema.json",
+  "title": "filePro Batch Report, Output Format & XL_* Analysis",
+  "type": "object",
+  "required": ["table", "output_formats", "batch_jobs", "xlsx_exports"],
+  "properties": {
+    "table": { "type": "string" },
+    "output_formats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["format_file", "real_fields", "dummy_print_vars", "dispatched_by", "evidence"],
+        "properties": {
+          "format_file": { "type": "string" },
+          "real_fields": { "type": "array", "items": { "type": "integer" } },
+          "dummy_print_vars": { "type": "array", "items": { "type": "string" } },
+          "dispatched_by": { "type": "array", "items": { "type": "string" } },
+          "layout_available": { "type": "boolean" },
+          "evidence": { "type": "array" }
+        }
+      }
+    },
+    "batch_jobs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "command_or_trigger", "selection_logic", "break_levels", "evidence"],
+        "properties": {
+          "name": { "type": "string" },
+          "command_or_trigger": { "type": "string" },
+          "selection_logic": { "type": "string" },
+          "break_levels": { "type": "array", "items": { "type": "string" } },
+          "writes_tables_or_queues": { "type": "array", "items": { "type": "string" } },
+          "evidence": { "type": "array" }
+        }
+      }
+    },
+    "xlsx_exports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["workbook_handle_var", "functions_used", "encrypted_save", "evidence"],
+        "properties": {
+          "workbook_handle_var": { "type": "string" },
+          "functions_used": { "type": "array", "items": { "type": "string" } },
+          "encrypted_save": { "type": "boolean" },
+          "evidence": { "type": "array" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

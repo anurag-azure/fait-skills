@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/filepro-index-retrieval/schema.json",
+  "title": "filePro Index & Retrieval Strategy Analysis",
+  "type": "object",
+  "required": ["table", "indexes", "lookup_patterns"],
+  "properties": {
+    "table": { "type": "string" },
+    "indexes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "kind", "letter", "key_composition_status"],
+        "properties": {
+          "file": { "type": "string" },
+          "kind": { "type": "string", "enum": ["automatic", "demand", "named", "qualifier"] },
+          "letter": { "type": "string" },
+          "inferred_segments": { "type": "array", "items": { "type": "string" } },
+          "key_composition_status": { "type": "string", "enum": ["verified_by_code", "verified_by_dxmaint", "unverified_pending_dxmaint"] },
+          "evidence": { "type": "array" }
+        }
+      }
+    },
+    "lookup_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["process_ref", "alias", "target_table", "index_letter", "flags", "has_range_scan", "missing_not_check_risk"],
+        "properties": {
+          "process_ref": { "type": "string" },
+          "alias": { "type": "string" },
+          "target_table": { "type": "string" },
+          "qualifier": { "type": ["string", "null"] },
+          "index_letter": { "type": ["string", "null"] },
+          "flags": { "type": "array", "items": { "type": "string" } },
+          "has_range_scan": { "type": "boolean" },
+          "missing_not_check_risk": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

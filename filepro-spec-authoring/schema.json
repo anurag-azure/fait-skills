@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/filepro-spec-authoring/schema.json",
+  "title": "Module Spec Pack Manifest Schema",
+  "type": "object",
+  "required": ["module", "deliverables", "omitted_sections", "traceability_summary", "status"],
+  "properties": {
+    "module": { "type": "string" },
+    "deliverables": {
+      "type": "object",
+      "required": ["overview_md", "brd_md", "functional_spec_md", "technical_spec_md", "dependency_graphs", "data_dictionary_md", "polyglot_boundaries_md", "bdd_test_cases", "flag_catalog_md", "flag_catalog_json"],
+      "properties": {
+        "overview_md": { "type": "string" },
+        "brd_md": { "type": "string" },
+        "functional_spec_md": { "type": "string" },
+        "technical_spec_md": { "type": "string" },
+        "dependency_graphs": { "type": "array", "items": { "type": "string" } },
+        "data_dictionary_md": { "type": "string" },
+        "polyglot_boundaries_md": { "type": "string" },
+        "bdd_test_cases": { "type": "string" },
+        "flag_catalog_md": { "type": "string" },
+        "flag_catalog_json": { "type": "string" }
+      }
+    },
+    "omitted_sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["section", "reason"],
+        "properties": { "section": { "type": "string" }, "reason": { "type": "string" } }
+      }
+    },
+    "traceability_summary": {
+      "type": "object",
+      "required": ["total_claims", "verified_claims", "traceability_rate"],
+      "properties": {
+        "total_claims": { "type": "integer", "minimum": 0 },
+        "verified_claims": { "type": "integer", "minimum": 0 },
+        "traceability_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "status": { "type": "string", "enum": ["draft", "pending-review", "approved", "changes-requested", "gaps-open"] }
+  },
+  "additionalProperties": false
+}
