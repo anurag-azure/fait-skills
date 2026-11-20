@@ -67,6 +67,11 @@ Generate **Markdown (`.md`) files only** at this stage (do **not** generate `.ht
 - **Removed Superseded Artifacts (Do NOT publish in final set):** `RULE_QUICK_REFERENCE.md`, `README_TEST_GENERATION.md`, `README_TESTS.md`, `TEST_GENERATION_SUMMARY.md`, `VALIDATION_REPORT.md`, and `.html` files.
 
 ### 2.4 High-Contrast Dark/Light Mermaid & Markdown Hygiene Contract
+- **Mandatory Mermaid Parser Safety:**
+  1. Never use reserved keyword `end` as a flowchart node ID (always use `endNode` or `done`; reserve standalone `end` strictly for closing `subgraph`).
+  2. Never put semicolons `;` inside `sequenceDiagram` message text (Mermaid splits statements at `;`; use commas `,`) and avoid raw `->` inside `participant ... as ...` aliases.
+  3. Always double-quote edge labels containing parentheses or symbols (`|"lookup (dynamic) i=a"|`).
+  4. Keep every Mermaid diagram at or below **150 edges** (hard Mermaid renderer limit is 500 edges; `assemble_specs.js` compacts/caps diagrams exceeding 440 edges).
 - **Mandatory Contrast Pairings:** Never emit a Mermaid `classDef` or `style` with `fill:` unless an explicit high-contrast `color:` is paired on the same declaration (`color:#0f172a` on light fills, `color:#f8fafc` on dark fills):
   - `classDef observed fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#0f172a;`
   - `classDef decision fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#0f172a;`
