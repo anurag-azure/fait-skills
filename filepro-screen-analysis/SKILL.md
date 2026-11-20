@@ -1,29 +1,42 @@
 ---
 name: filepro-screen-analysis
-description: Decodes binary screen.* text extractions, *N / !xx tokens, interactive @wef/@wlf/@wbl/@wuk handlers, POPUP UPDATE screens, KT video screen frames, and Slide 4 multi-table screen flows.
-version: 2.0.0
-applies_to: [WF-F1, WF-F2]
+description: Content-aware screen identification guardrail and filePro screen decoder for screen.* and non-screen-prefixed serialized screens, resolving *N, !N, %N, !xx, and !@xx tokens, interactive @wef/@wlf/@wbl/@wuk handlers, POPUP UPDATE screens, and ambiguous-artifact flagging.
+version: 3.0.0
+applies_to: [WF-F0, WF-F1, WF-F2]
 ---
 
-# Skill: `filepro-screen-analysis`
+# Skill: `filepro-screen-analysis` (v3.0 — Content-Aware Screen Identification Guardrail)
 
-Use this skill as a **separate specialist lens** whenever a module contains `screen.*` files (`evidence-pack/tables/<Table>/screens.md`), screen-field triggers (`@wef`/`@wlf`/`@wbl`/`@wuk`), or KT screenshots. Load ONLY when the module scope includes screen artifacts or UI flows.
+Use this skill in **Data and Screens Analyst**, **Spec Document Assembler**, **CSA Architect**, and **fp-normalizer** auditing.
 
-## 1. Reading `screen.*` Artifacts Accurately
-* `screens.md` extracts printable ASCII runs (`>=4` chars) from binary `screen.*` files in stored order and resolves tokens:
-  * **`*N`** = real table field `N` (mapped to `dictionary.json`).
-  * **`!xx`** = dummy screen field or declared variable `xx` (distinct from `*xx` used in `out.*` reports!).
-* **Binary coordinate limitation:** Exact screen `(row, col)` coordinates, ANSI colors, field cursor tab order, and screen-specific protected-field flags are **not** inside `screens.md`. **Never invent screen geometry.**
+## 1. Content-Aware Screen Identification Guardrail (Mandatory)
 
-## 2. Correlating Screen Layout & Interactive CSR Journeys
-Recover operator workflows strictly by fusing three verifiable sources:
-1. **`screens.md` token inventory** (e.g., `63` Invoice variants including `screen.I0`, `screen.blk`, `screen.pri`, `18` `Prices` screens, `9` `PricesTable` screens, `34` `Members` screens, `2` `Exceptions` screens).
-2. **`prc.*` interactive UI events:**
-   * `@wef<fld>` (when entering field), `@wlf<fld>` (when leaving field), `@wbl<fld>` (when leaving browse), `@wuk<fld>` (function/special keys), `@key<X>` (key shortcut).
-   * `POPUP UPDATE` / `SHOW` / `MSGBOX` / `ERRORBOX` / `PUSHKEY` statements (`Invoice/prc.inputI:L1428` etc.).
-   * Distinguish `@pz=""` interactive behavior from `@pz ne ""` unattended `-rz` automation (`PushKey "[ENTR]"`, `L2622`).
-3. **Curated Visual & Architect Context:**
-   * Curated non-PHI KT frames cited strictly as `KT@<mm:ss>#frame` (`kt-session/scenes/`).
-   * Architect Slide 4 UI navigation baseline: **`Prices` (`18` screens) -> Press `P` -> `PricesTable` (`9` screens) -> `Lookup` `Vendors`**.
-   * When referenced screens are driven by missing processes (e.g., `Invoice/prc.input`, `Invoice/ChgPrice`), record the UI behavior as `pending missing process/live screen walkthrough`.
-4. **Complete Screen Coverage (Zero Silent Omissions):** Document **every** screen listed in `evidence-pack/tables/<Table>/screens.md` for all in-scope tables (e.g., all `18` `Prices` screens + `9` `PricesTable` screens) with its extracted `*N`/`!xx` field tokens, `@qu` qualifier usage, browse grid tokens (`!zz`, `!ba`), function keys (`F6`, `F10`, Press `P`), and print/date utility menus. Use a Node assembly script if the full screen inventory exceeds `12 KB` rather than omitting screens.
+**Never identify screens solely by checking whether filenames start with `screen.`.** Translated-code repositories or legacy drops may serialize screens into `.strings.txt` or alternate filenames (or invoke screens dynamically via `screen "..."`, `switchto "..."`, `popup update ...`).
+
+Apply a generic, multi-signal content-aware classifier across every table directory:
+
+1. **Positive Structural Screen Indicators:**
+   - **Valid table-field placeholders:** `*N` (editable), `!N` (display-only), or `%N` (conditional/protected) where `1 <= N <= map.fields.length`, with `>= 2` distinct valid field numbers.
+   - **Screen dummy / system tokens:** `!xx` (2-char runtime display/lookup variables such as `!vn`, `!vo`, `!cd`, `!ce`, `!ar`, `!em`) and `!@xx` (`!@qu`, `!@td`, `!@rn`).
+   - **Interactive UI markers:** Function-key prompts (`F6`, `F10`, `Press 'P'`), interactive field labels matching `map` labels, or `prc.*` rendering/navigation calls (`screen "<name>"`, `switchto "<name>"`, `popup update <name>`).
+   - **Container profile:** Binary/source size consistent with filePro screen templates (~`3,000–4,200` bytes in `strings-manifest.csv` or raw file).
+2. **Negative Guards (Preventing False Positives):**
+   - Exclude non-screen data/code containers (`map`, `prc.*`, `tok.*`, `index*`, `key*`, `data*`, `lockf*`, `strings-manifest.csv`) whose binary dumps contain incidental `*A`/`!1` byte sequences.
+   - Distinguish printer output formats (`out.*` or `hplaser` printer-driver headers with `*xx` print dummies) as **`output-format`** rather than interactive **`screen`**, while still resolving their tokens and documenting them under Reports & Outputs.
+3. **Ambiguous & Missing-Screen Flagging:**
+   - Record every non-`screen.*` file that triggers positive token/UI signals as `AMBIGUOUS_SCREEN_CANDIDATE` in `screen-guardrail-report.json` for review.
+   - Cross-check all `screen`, `switchto`, and `popup update` targets referenced in `prc.*` against detected screen files; flag any referenced screen with no backing file in the drop (e.g. `popup update 1I` referencing `Members/screen.1I` vs `Invoice`) as `REFERENCED_CROSS_TABLE_OR_MISSING` for verification.
+
+## 2. Token Resolution & Editability Classification
+
+Resolve every placeholder against `dictionary.json` in appearance order (zero truncation):
+- **`*N`** → Real field `N` (**Editable**)
+- **`!N`** → Real field `N` (**Display-only**)
+- **`%N`** → Real field `N` (**Conditional / Protected**)
+- **`!xx`** → Dummy variable `xx` (**Dummy (runtime)**)
+- **`!@xx`** → System variable `@xx` (**System**, e.g. `!@qu` = Current Qualifier)
+
+## 3. Binary Layout Limitation & Naming Hygiene
+
+- Exact 80×24 `(row, col)` cursor coordinates and ANSI colors are stored in undecoded binary headers — **never invent screen geometry**; mark visual layout geometry as `UNKNOWN - Verify via Define Screens export or live KT frames`.
+- Use **`Screen Summary`** (never `Context Table Screen Summary`) when summarizing screens of non-primary referenced tables.

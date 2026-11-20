@@ -1,52 +1,67 @@
 ---
 name: filepro-spec-authoring
-description: Authors client-ready Program Overviews, BRDs, Functional & Technical Specifications (HTML/Confluence/Word + MD), Dependency Graphs, Data Analysis, BDD Tests, and Ambiguity Ledgers aligned to PostPOC Slides 2-6 and PSA §4.
-version: 2.0.0
-applies_to: [WF-F1, WF-F4, WF-F5]
+description: Authors client-review-ready Markdown (.md) Functional Specifications (with BRD integrated at the beginning and consolidated Business Rules), Technical Specifications (with merged Polyglot Boundaries), concise Overviews, Data Dictionaries, Flag Catalogs, and Evaluation placeholders aligned to current-state FilePro evidence.
+version: 3.0.0
+applies_to: [WF-F1, WF-F2, WF-F4, WF-F5]
 ---
 
-# Skill: `filepro-spec-authoring`
+# Skill: `filepro-spec-authoring` (v3.0 — Revalidated BRD + Consolidated Markdown Spec Contract)
 
-Use this skill in **Spec Orchestrator**, **Test Seed Writer**, **Spec Document Assembler**, and **Spec Repair**.
+Use this skill in **Spec Orchestrator**, **Spec Document Assembler**, **CSA Architect**, and **Spec Repair**.
 
-## 1. Architect-Committed Deliverable Suite (`PSA §3(a)`, `PSA §4 #1`, `PostPOC Slide 6`)
-PSA §3(a) lists the Platform Engineer outputs as **Program Overview, BRD, BDD, Dependency Graphs, Data Analysis, Test Cases**; PSA §4 Deliverable #1 is the **Functional and Technical Specifications Document** (HTML/Confluence/MS Word). PSA §7 requires format and level of detail **in line with the POC specifications (May 2026)** in `FAIT code drop/POC-Output/`. Every module pack (`specs/<module>/`) therefore contains:
-1. **Program Overview (`overview.md` + `overview.html`):** purpose, scope and boundaries table, module inventory, complexity metrics, what is *not* in the drop, and clickable links to all sibling specs.
-2. **BRD (`brd.md` + `brd.html`):** business capabilities, stakeholders, plain-English business rules (`R-<MOD>-###`) linked to `rule_catalog.json`, open business questions.
-3. **Functional Specification (`functional_spec.md` + `functional_spec.html`) — 10-Section POC & Comparison-Aligned Structure:**
-   1. **What This Module Does (Executive Summary & Scope):** module purpose, in-scope vs excluded systems, and business value linked to `[overview.md](overview.md)`.
-   2. **Who Uses It (User Personas, 7+ Roles & Access Patterns):** Product Managers, Pricing Analysts, Purchasing Staff, Inventory Managers, CSRs/Sales Representatives, E-commerce Administrators, Finance/Accounting, and Warehouse/QC (noting legacy filePro password/user-ID access controls vs RBAC gaps).
-   3. **What Information Is Tracked (Functional Data Model):** complete domain attribute groups grounded in `[data_dictionary.md](data_dictionary.md)`:
-      - For `pricing`: Product Master Core, Vendor & Purchasing (`Vendor_#`, `Purchase_Vendor_#`, `StmtInvoiceVendor`, `StmtCreditVendor`), Availability & Lifecycle (`Product_Start_Date`, `Discontinued_Date`, `No_Stock_Orders_After`, `First_Day_Product_Sold`), Inventory & Reorder (`Stocked?`, `Order_Interval`, `Lead_time`, `Added_Order_Cycle_Days`, `Order_Multiplier`, `Fill_Rate`, `Usage limits`, plus calculated `!cd` Total Cycle Days & `!ce` Cycle-Adjusted Qty), Web & E-commerce (`Display_On_WEB`, `_YS`, `Allow_on_product_List`, `Build_TSV_Catalog`), Physical Characteristics (`Weight`, `Length`, `Width`, `Height`, `Case_Qty`, `Case_Cost`), Quality & Compliance (`Always_QC_Scan`, `QC Hold`, `Must have UPC`, `Generic_UPC_Code`, `Validated_Suffix?`, `Recall_Lot_Length`), Sales History (`Date_Last_Activity`, `Sold_last_3_Months`, `Sold_last_Year`), Tax/Rebates (`Tax_Catagory`, `AvaTAX_code`, `CooperRebate%`), and `PricesTable` 5-tier grids / `@qu` qualifiers.
-      - For `invoicing`: Order Header (`1–60`), 25-Slot Repeating Product Line Groups (`61–505`: `stkp`, `sku`, `desc`, `qty`, `prc`, `tax`, `man`, `ppd`, `BOed`, `ext`, `post`, `SQLID`, `exc`, `bank`), Status & Control flags (`#21`, `#22`, `#28`, `QCTrail`, `DlySave`), and Calculated Totals (`#14`, `#36–#38`).
-   4. **How Users Interact With It (Screen-by-Screen UI Workflows & Validations):** every screen from `evidence-pack/tables/<Table>/screens.md` (`Prices`: `1, 2, 3, 7, 8, 9, Desc, Brands, Blank, NewPrice, pop, prt_Dates, prt_menu, PRT_ChangeDates, grid`; `PricesTable`: `0, 1, 1save, 2, 8, ChangeDates, grid, popup, PRT_ChangeDates`; `Invoice`: `I0–I9, C0–C9, VI1–VI9, VC1–VC9, STPAddress, STPQuestions, Ship2Address, scnUPC, ManPost, pri, prc, SUM, Menu`), field validations, auto-population (`!vn`, `!vo`, `!lp`, `!rp`, `!cd`, `!ce`), function keys (`F6`, `F10`, `Press 'P'`), browse grids (`!zz`/`!ba`), print menus (`Add`/`Update` detail options), and `@pz=""` interactive vs `-rz` unattended batch modes.
-   5. **Business Rules (Process Rules `R-<CODE>-###` + Domain & Data Integrity Rules):**
-      - Process rules citing exact `evidence-pack/processes/*.annotated.txt` `:L<line>` refs, explicitly covering: Exception Expiration (`(@td - exc(28)) <= exc(31)` when `@pz == ""` at `Library/prc.Pricing:L087`), Ship-to-Patient alternate pricing (`STPInvoice="Y"`, `exc(17..27)` at `L099–L115`), Exclusive Member exception filtering (`priceLikeCheck="*"` and `exc(1)="Y"` at `L086`), `NoExceptions`/`FreeGood` early return (`L037–L038`) vs group list fallback, and `CLK` order-date override (`mem(34/103/128)`).
-      - Domain & Data Integrity rules grounded in `dictionary.json`/`screens.md`: Product Availability & Lifecycle (`#16,#17,#39,#48`), Inventory Reorder & Usage Thresholds (`#22,#49–#54,#58–#60`), Web Display Master/Child Authorization (`#25,#47,#56,#102,#103`), QC Scan/Hold & UPC/SKU Validation (`#8,#19,#23,#28,#30,#75,#106`), Mandatory/Companion/Alternate Substitution (`#26,#27,#34,#40,#46`), and Tax/Avalara/Cooper Rebate/Statement Accounting (`#6,#73,#77,#78,#107–#110`) (and for Invoicing: Account/Auth, Pricing, Inventory, Shipping, Tax, 25-Line Limit `#33`, Backorder `BOed`, Print `2BPrtd`/`out.*`, Posting `#22`/`post`, Trial Lens, Value Pack).
-   6. **Edge Cases, Failure Modes & Boundary Conditions:** (a) Empty `pr2` array outcomes per method (`F`/`C`/`%`), (b) `PLAccount` circular-reference / loop prevention (`priceLikeCheck`), (c) Qualified table (`@qu` / `OPT`) fallback scenarios, (d) `CLK` `DateOrderTaken` edge cases (empty, future, expired price), (e) 6-Step Exception Validation failure outcomes, and (f) Concurrency/record locking (`-p`/`-w`) & `@pz` batch vs interactive divergence.
-   7. **How This Module Connects to Other Parts of the System (Integration Contracts):** structured contract tables (`Data Element | Direction | Source/Target Table & Field | Trigger/Frequency | Validation Rules | Error/Fallback Handling`) across all 7 connected systems (`Members`, `Vendors`, `Exceptions`, `Inventory`, `E-commerce/Web`, `Invoicing/Order Entry`, and `Tax/Shipping/Reporting`).
-   8. **How Pricing / Invoicing Works (Step-by-Step Decision Process, Mermaid Diagrams & Worked Examples):** embed both the Decision Tree Mermaid diagram (`flows/<module>_flow.mmd`) and a Lifecycle State Diagram (`flowchart` or `stateDiagram-v2` with zero HTML tags), plus worked examples.
-   9. **Reports, Outputs, Print Menus & Audit Trails:** `out.*` forms, `screen.prt_menu` batch/report options, `2BPrtd`, `QCTrail`, `SQLID`/`Push_2_SQL`.
-   10. **Acceptance Criteria (`AC-###` + Gherkin) & Known Gaps:** linked to `[tests/<module>.feature](tests/<module>.feature)`, `[technical_spec.md](technical_spec.md)`, `[data_dictionary.md](data_dictionary.md)`, `[rule_catalog.json](rule_catalog.json)`, and `[findings.json](findings.json)`.
-4. **Technical Specification (`technical_spec.md` + `technical_spec.html`) — POC section order & strict reference discipline:**
-   * **Executive Summary & Complexity Metrics** (line counts, labels, rules, tables, screens, indexes) and **Scope & Excluded Files**.
-   * **Data Dictionary & Key File Profile Summary** (complete field counts, repeating groups, record counts/stride/active-vs-deleted flags, code shape patterns, edit legend — with clickable links to `[data_dictionary.md](data_dictionary.md)`).
-   * **Screen Specifications Summary** (all screens from `evidence-pack/tables/<Table>/screens.md` with `*N`/`!xx` tokens, `@wef`/`@wlf`/`@key` handlers, function keys, `@qu` qualifier usage — linked to `[data_dictionary.md](data_dictionary.md)`).
-   * **Processing Table Logic & Subroutines** (entry points, `@pz` divergence, validations, exact fixed-width lookup key padding e.g. `7+6=13` / `7+6+4+7=24`, array odd/even slot semantics e.g. `pr2[]`, STP/CLK/fallback sequences, dummy variable formulas, exact `WARNING !!` literals — every behavior citing `<file>:L<line>`, `@label`, and `R-<CODE>-###`).
-   * **Index Definitions & Access Patterns** (all indexes from `indexes.json`, explicitly distinguishing code-verified compositions vs lookup-inferred vs `unverified pending dxmaint screenshot`).
-   * **Cross-File Dependency Matrix & External Integration Boundaries** (caller, `:L<line>`, target table, index, lookup flags `-nx/-ng/-nl/-o/-p`, key fields, `SYSTEM`, `SQLID`/`Push_2_SQL` — linked to `[polyglot_boundaries.md](polyglot_boundaries.md)` and `[flows/<module>_dependency_graph.mmd](flows/<module>_dependency_graph.mmd)`).
-   * **Embedded Workflows & Diagrams** (`flows/<module>_flow.mmd` and `flows/<module>_dependency_graph.mmd`, rendered directly in HTML).
-   * **Operational Constraints, Access Control & NFRs** (strictly distinguishing **observed legacy metrics/volumes** vs **client-supplied SLAs** vs **gaps pending SME confirmation**; never invent unverified `<100ms` SLAs or unverified REST/GraphQL/microservice endpoints as As-Is architecture).
-   * **Gaps, Confidence Assessment & Evidence Traceability Appendix** (claim-to-citation ledger linking `[rule_catalog.json](rule_catalog.json)`, `[findings.json](findings.json)`, `[flag_catalog.md](flag_catalog.md)`, `[tests/<module>.feature](tests/<module>.feature)`, and `evidence-pack/`).
-   * *(Optional)* **Proposed Horizon 2 Modernization Notes** may appear ONLY in a clearly separated final subsection referencing exact legacy subroutines and Rule IDs — never presented as current-state architecture.
-5. **Dependency Graph (`flows/<module>_dependency_graph.mmd`) and Control Flow (`flows/<module>_flow.mmd`):** module → processes → tables/lookups → external hooks; items missing from the drop drawn as dashed "not in drop" nodes. `<=10` nodes per subgraph, quoted labels, no HTML tags in Mermaid.
-6. **Data Analysis (`data_dictionary.md` + `data_dictionary.html`):** complete `1..N` field tables (all fields from `dictionary.json`, using a Node script when >12 KB so zero fields are dropped), edit type legend, repeating groups, key file profile, sample-data biases (`keytj` 17-record sample, `Members` 2-record sample), complete screen inventory from `screens.md`, and flag indicator summary.
-7. **BDD / Test Cases (`tests/<module>.feature`, `test_seeds.json`):** Gherkin scenarios mapped 1:1 to `R-<MOD>-###` IDs (input to `Slide 13` BRE validation).
-8. **Flag usage (`flag_catalog.{md,html,json}`)** for PSA §4 Deliverable #4 and **Evidence & Traceability Appendix** (last section): claim-to-citation ledger with clickable cross-links.
+## 1. Revalidated BRD Contract (Integrated at Beginning of `functional_spec.md`)
 
-> **Deterministic HTML Rendering:** Every `.md` deliverable in `specs/<module>/` is automatically compiled into a standalone `.html` file (with TOC, Mermaid diagrams, and `.html` sibling links) plus `index.html` by the deterministic `Render Spec HTML` step (`tools/render_specs_html.js`). Do NOT hand-author duplicate `.html` files inside LLM agent turns.
+The Business Requirements Document (BRD) is **not** a standalone duplicate file in the final specification set; it is authored as **Part I (beginning)** of `specs/<module>/functional_spec.md` with strict separation between business requirements and technical implementation:
 
-## 2. Deterministic Writing & Formatting Discipline
-* **Rule #7 (Omit Unsupported Sections):** Do NOT invent Menu Navigation, Report Layouts, or Screen Coordinate tables if `_run/scope.json` shows zero menu/report/screen artifacts for that module — note their absence explicitly in the Scope & Boundaries table.
-* **ASCII Punctuation & Clean Markdown:** Avoid malformed unicode bullets/quotes in JSON/code blocks; keep each write turn concise (`<=12 KB`, splitting or assembling deterministically if a spec exceeds size limits).
-* **Open Questions Ledger:** Surface ambiguities, missing drops (`37` tables / `63` processes / `17` edits), and Slide 3–4 path notes (`Invoice/AvaTax_Api` vs conceptual POC grouping) transparently without smoothing over gaps.
+1. **Intended Inputs:** Verified `evidence-pack/` metadata, `specs/<module>/rule_catalog.json`, `specs/<module>/findings.json`, and validated `/docs` context (never raw `key*` PHI).
+2. **Evidence-Grounded & Provenance-Tagged Requirements:** Express capabilities, business outcomes, stakeholder needs, and plain-English functional requirements without leaking low-level filePro runtime syntax or target-state technology choices. Explicitly label all requirements reconstructed from source code as **`Implementation-Derived Requirement (Unapproved — Pending Stakeholder Review)`** — never present code-derived requirements as stakeholder-approved business requirements. Preserve any stakeholder-supplied requirement identifiers and approval status separately.
+3. **Standardized Domain Terminology (Mandatory):**
+   - Use **`Product Management`** (never `Product Master & Lifecycle Management`).
+   - Use **`Exception Overrides`** (never `Customer/Vendor/Product Exception Overrides`).
+   - Use **`Screen Summary`** (never `Context Table Screen Summary`).
+   - Do **not** assert **`Context Tables`** as an implementation construct (use `Primary Module Tables` and `Referenced Drop Tables (In-Drop)` / `Missing Referenced Tables`).
+4. **No Open Business & SME Questions in the BRD Portion:** Strip `Open Business & SME Questions` out of the BRD opening section; consolidate all unresolved questions into ONE clearly separated section at the **end** of `functional_spec.md`.
+5. **Evidence Classification & Unknowns:** Tag material claims as `Observed Fact`, `Inference`, `Unknown`, or `Recommendation`. Use `UNKNOWN - Verify in runtime/config` whenever evidence is insufficient; never invent behavior or emit literal `undefined` / `null` / empty placeholders.
+
+## 2. Consolidated Markdown-Only Deliverable Suite (`specs/<module>/`)
+
+Generate **Markdown (`.md`) files only** at this stage (do **not** generate `.html` files). Embed valid **Mermaid** diagrams (`no HTML tags`, `no double ]]`) directly inside Markdown.
+
+### 2.1 `functional_spec.md` (Consolidated BRD + Overview Sections + Functional Behavior + Business Rules)
+1. **Part I — Business Requirements Document (BRD):** Executive Summary, Business Capabilities (using `Product Management`, `Exception Overrides`), Business Objectives & Scope Boundaries *(no Open Questions here)*.
+2. **Part II — Program Overview & Module Inventory (relocated from Overview):**
+   - `<Module> Module — Program Overview`
+   - `Scope & Boundaries`
+   - `Module Inventory`
+   - `Related Specifications`
+3. **Part III — Functional Behavior & User Interactions:**
+   - Personas & Roles (module-specific; never copy Pricing personas into Invoicing)
+   - What Information Is Tracked (grounded in `data_dictionary.md`)
+   - How Users Interact With It (grounded in content-aware screen identification; all detected screens)
+   - Edge Cases & Failure Modes
+   - System Connections & Functional Integration Contracts
+   - How `<Module>` Works (Decision Process, embedded Mermaid flowchart, synthetic non-PHI worked examples)
+   - Reports & Outputs (`out.*`, print queues, electronic outputs)
+4. **Part IV — Consolidated Business Rules:**
+   - Complete categorized business rules merged from `rule_catalog.json` (discard standalone `RULE_QUICK_REFERENCE.md` after preserving all unique rule content here).
+   - Every rule MUST have a non-empty plain-English description (zero literal `undefined`, `null`, or bare `-`) and an exact evidence citation (`Source path | Artifact identifier | Line range or stable locator | Supporting detail`).
+5. **Part V — Evaluation / Validation:** In templates, keep a clearly labeled placeholder. In generated specifications, populate with actual deterministic validation status, scope, known limitations, semantic-review status, and a link to `../evaluation_report.md` (never imply human/SME approval).
+6. **Part VI — Unresolved Business & SME Questions:** Single consolidated section at the end of `functional_spec.md` (including pending Glossary decision with Manish for Data Dictionary & Flag Catalog).
+
+### 2.2 `technical_spec.md` (Technical Implementation + Merged Polyglot Boundaries)
+1. Executive Summary & Complexity Metrics (verified counts only; never `Screens: 0` when screens exist).
+2. Scope Inventory & Excluded / Missing Artifacts (In-Drop tables/processes vs Missing tables/processes; **no `Context Tables`**).
+3. Data Dictionary Summary & Key File Storage Profile (linked to retained `data_dictionary.md`).
+4. Complete Screen Specifications & Content-Aware Screen Identification Guardrail (`Screen Summary` for non-primary tables; full `%N`/`*N`/`!N`/`!xx`/`!@xx` token tables).
+5. Processing Table Logic, Subroutines, `dim` Arrays, Lookups, Calls, `system` & `form` Directives.
+6. Index Definitions & Access Patterns (explicitly tagging binary headers as `UNKNOWN - Verify via dxmaint screenshot`).
+7. **Polyglot Boundaries & Cross-File Integration Seams (Merged from `polyglot_boundaries.md`):** OS `system` calls, `SQLID`/`Push_2_SQL` MariaDB seam, PHP/AvaTax boundaries, missing Bash/Cron/PHP/SQL scripts (`PSA §4a`), and embedded Mermaid dependency graph.
+8. Core Processing Workflows (embedded Mermaid flow diagram).
+9. Operational Constraints, Behavioral Flags & Static Analysis Findings (linked to `flag_catalog.md`, `flag_catalog.json`, `findings.json`).
+10. **Evaluation / Validation (Placeholder):** Clearly labeled placeholder linking to `../evaluation_report.md`.
+11. Traceability Matrix & Evidence Index link (`../traceability_matrix.md`).
+
+### 2.3 Retained vs Removed Artifacts
+- **Retained in Current Locations (Pending Manish Confirmation on Glossary Relocation):** `data_dictionary.md`, `flag_catalog.md`, `flag_catalog.json`.
+- **Retained Machine-Readable & Supporting Assets:** `rule_catalog.json`, `findings.json`, `findings.md`, `flows/<mod>_flow.mmd`, `flows/<mod>_dependency_graph.mmd`, `tests/<mod>.feature`, `test_seeds.json`, concise `overview.md` (navigation pointer only).
+- **Removed Superseded Artifacts (Do NOT publish in final set):** `RULE_QUICK_REFERENCE.md`, `README_TEST_GENERATION.md`, `README_TESTS.md`, `TEST_GENERATION_SUMMARY.md`, `VALIDATION_REPORT.md`, and `.html` files.

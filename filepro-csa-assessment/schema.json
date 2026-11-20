@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "fait/skills/filepro-csa-assessment/schema.json",
+  "title": "filepro-csa-assessment Skill Contract",
+  "type": "object",
+  "required": ["skill", "version", "domains", "passes", "output_file", "architecture_file"],
+  "properties": {
+    "skill": { "const": "filepro-csa-assessment" },
+    "version": { "type": "string", "default": "1.1.0" },
+    "domains": {
+      "type": "array",
+      "minItems": 7,
+      "items": { "type": "string" }
+    },
+    "passes": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "type": "string" }
+    },
+    "output_file": { "type": "string", "default": "specs/csa/CURRENT_STATE_ASSESSMENT.md" },
+    "architecture_file": { "type": "string", "default": "specs/csa/CURRENT_STATE_ARCHITECTURE.md" },
+    "epistemic_tags": {
+      "type": "array",
+      "items": { "enum": ["Observed Fact", "Inference", "Unknown", "Recommendation"] }
+    }
+  }
+}
