@@ -1,15 +1,16 @@
 ---
 name: filepro-csa-assessment
-description: Executes the 4-pass, 7-domain Current-State Assessment (CSA) and separately identifiable Current-State Architecture for FilePro healthcare/optical ecosystems with strict evidence separation (Observed Fact, Inference, Unknown, Recommendation), Lucid Chart diagram & client project-doc reconciliation, standardized inventory/risk contracts, and evidence-grounded Mermaid diagrams.
-version: 1.2.0
+description: Executes the 4-pass, 7-domain Current-State Assessment (CSA), separately identifiable Current-State Architecture, and Single-File Master Executive Summary & Architecture Overview for FilePro optical/healthcare ecosystems with strict evidence separation (Observed Fact, Inference, Unknown, Recommendation), Lucid Chart & client project-doc (incl. 20261118_Drop Confluence PDFs) reconciliation, standardized inventory/risk contracts, and evidence-grounded high-contrast Mermaid v11 diagrams.
+version: 1.3.0
 applies_to: [WF-F1, WF-F2, WF-F3]
 ---
 
-# Skill: `filepro-csa-assessment` (v1.2 — 7-Domain, 4-Pass FilePro CSA & Current-State Architecture)
+# Skill: `filepro-csa-assessment` (v1.3 — 7-Domain CSA, Current-State Architecture & Executive Overview)
 
-Use this skill in **CSA Architect**, **Spec Orchestrator**, and **Spec Document Assembler** to produce TWO clearly distinct Markdown deliverables inside `wf-f0-f1-v3-all-modules-spec-swarm.json`:
+Use this skill in **CSA Architect**, **Executive Architecture Author**, **Spec Orchestrator**, and **Spec Document Assembler** to produce THREE clearly distinct Markdown deliverables inside `wf-f0-f1-v4-all-modules-spec-swarm.json`:
 1. `specs/csa/CURRENT_STATE_ASSESSMENT.md` (7-domain, 4-pass Current-State Assessment)
-2. `specs/csa/CURRENT_STATE_ARCHITECTURE.md` (separately identifiable Current-State Architecture with >=5 valid zero-HTML Mermaid diagrams)
+2. `specs/csa/CURRENT_STATE_ARCHITECTURE.md` (separately identifiable Current-State Architecture with >=5 valid zero-HTML high-contrast Mermaid v11 diagrams)
+3. `specs/EXECUTIVE_ARCHITECTURE_OVERVIEW.md` (SINGLE continuous, export-ready 10-section Master Executive Summary & Architecture Overview synthesizing CSA artifacts, System Context & Integration diagrams, and module specs with `[Based on: Pricing, Invoices]` scope tagging, explicit `Not documented in current module scope (verify in subsequent assessment waves)` gap markers, `>=3` Mermaid diagrams including `erDiagram`, and direct clickable drill-down links to `./pricing/{functional,technical}_spec.md` and `./invoicing/{functional,technical}_spec.md`)
 
 ## 1. Evidence & Separation Guardrails (Non-Negotiable)
 
@@ -27,7 +28,8 @@ Use this skill in **CSA Architect**, **Spec Orchestrator**, and **Spec Document 
      - **`fP Table Documentation/` (`wva_data_table_list.xlsx` + `data_tables/*.xlsx`):** ~5-year-old FAIT estate inventory (**519 tables**: 98 P3, 46 P2, 112 P1, 211 P0/archive, 52 `?`/TBD) and field `Valid Data Details`. Always flag drift vs live code (e.g., `Invoice.60` `Facility_ID` vs `Unused`; `Elavon` migration note vs `1stPayGateway` diagram).
      - **`fP ITHD documentation/`:** Operational SOPs confirming random filePro invoice data corruption recovered via `Invoice dly` (`DlySave`), `/etc/no_user_login` overnight lockout, `Push_2_SQL` ~5-min cadence, `lpr -r -pA07 STMNTS`, and same-day-only `/appl/print/PrintEmFiles/ArchivedPrints/`.
      - **`CSR_Documentation/`:** Live 2025–2026 operational rules (Anzio emulator, 6-month password expiry, `Panther=Costco/15000`, `Hulk=30000`, `Shopko=7500`, `HiWaldo=55000`, `Demo=99999` real-stock deduction warning, ECP E360+ Nov 2026 mandate, Alcon Marlo 30-min edit window & `Pcode 0092`, YourStore/EyeSubscribe/Text2Order auth-hold/capture rules, FDA/manufacturer return rules).
-     - **`Filepro Learning Sessions/`:** Dave Snyder developer training recordings covering filePro map/zero-size placeholders, screens, selection sets, input/automatic/output processing, reports, and indexes.
+     - **`Filepro Learning Sessions/`:** Dave Snyder developer training recordings covering filePro map/zero-size placeholders, Base-31 vowel-free invoice suffixes, `Invoice/prc.input` `chain` (`inputI`/`inputC`), printer-resident Word PCL macros, ~5,000-account / `17,269`-file statements, `ImportData` 1-byte table, 26 auto + 10 demand indexes, and `XL_*` APIs.
+     - **`20261118_Drop/` (323 Confluence PDFs / 687 pages, `Slingshot_Delivery_Inventory.xlsx`):** Confirms `Hulk = Walmart` (`30000`/`30000E`), `12000 = Fielmann`, `17000 = SVS`, **Elavon** (`TokenTransactions`) & **`PO_Group_Config`** (`MakeOrdersPGC`) **LIVE**, VMware cluster (`filepro`/`fpstage`/`fpdev`/`fptest`, `dbprod1.fp_info`, `fnas2nfs` 7-day backup), 4 active MariaDB sync seams replacing abandoned ODBC (`WEBExport`, `ToSQL.sql`, `Insert-UpdateI.php`, `db_request`/`fp_sql_query`), `Hard_Delete` freechain corruption cause, `OverNight` 2–2.5h + `736`-table `RecoverIndexes All`, `AutoFTP` X12 `850/852/867/997`, `USPS API v3` (`carrier_util.php`), `WVAOpticsJobs` 5-min CSV, `AutoMonthlyTaxCommit.sh`, `FastPass`, `Faxage`, `flux.php`, `/appl/log/fp_menu.log`, Anzio `3DES` SSH & cleartext creds control gaps, and `fP Dev Conventions.pdf`.
    - Always isolate draft/stale diagrams (`New MakeOrders -_ LensOrder flow.png`, Shopko/Fielmann note in `Invoice Posting.png`) and report conflicting client docs explicitly without guessing.
 5. **Evidence Citation Format:** `Source path | Artifact identifier | Line range or stable locator | Supporting detail`
 6. **Zero Personal Data (Signed PSA §7):** Never copy real customer names, phone numbers, email addresses, DOBs, or account PII from live data or CSR docs into generated deliverables.
