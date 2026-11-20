@@ -1,6 +1,6 @@
 # FAIT filePro Modernization Skills
 
-Public Slingshot skill repository for the FAIT filePro reverse-engineering, CSA, and specification pipelines (`WF-F1`, `WF-F0-F1`, `WF-F0-F1-v2`, `WF-F0-F1-v3`).
+Public Slingshot skill repository for the active FAIT filePro reverse-engineering, CSA, and specification pipeline (`wf-f0-f1-v3-all-modules-spec-swarm.json`, v3.2).
 
 ## Published Skills (13)
 
