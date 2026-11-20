@@ -1,11 +1,11 @@
 ---
 name: filepro-spec-authoring
 description: Authors client-review-ready Markdown (.md) Functional Specifications (with BRD integrated at the beginning and consolidated Business Rules), Technical Specifications (with merged Polyglot Boundaries), concise Overviews, Data Dictionaries, Flag Catalogs, and Evaluation placeholders aligned to current-state FilePro evidence.
-version: 3.0.0
+version: 3.1.0
 applies_to: [WF-F1, WF-F2, WF-F4, WF-F5]
 ---
 
-# Skill: `filepro-spec-authoring` (v3.0 — Revalidated BRD + Consolidated Markdown Spec Contract)
+# Skill: `filepro-spec-authoring` (v3.1 — Revalidated BRD + Consolidated Markdown Spec + High-Contrast Mermaid Contract)
 
 Use this skill in **Spec Orchestrator**, **Spec Document Assembler**, **CSA Architect**, and **Spec Repair**.
 
@@ -65,3 +65,13 @@ Generate **Markdown (`.md`) files only** at this stage (do **not** generate `.ht
 - **Retained in Current Locations (Pending Manish Confirmation on Glossary Relocation):** `data_dictionary.md`, `flag_catalog.md`, `flag_catalog.json`.
 - **Retained Machine-Readable & Supporting Assets:** `rule_catalog.json`, `findings.json`, `findings.md`, `flows/<mod>_flow.mmd`, `flows/<mod>_dependency_graph.mmd`, `tests/<mod>.feature`, `test_seeds.json`, concise `overview.md` (navigation pointer only).
 - **Removed Superseded Artifacts (Do NOT publish in final set):** `RULE_QUICK_REFERENCE.md`, `README_TEST_GENERATION.md`, `README_TESTS.md`, `TEST_GENERATION_SUMMARY.md`, `VALIDATION_REPORT.md`, and `.html` files.
+
+### 2.4 High-Contrast Dark/Light Mermaid & Markdown Hygiene Contract
+- **Mandatory Contrast Pairings:** Never emit a Mermaid `classDef` or `style` with `fill:` unless an explicit high-contrast `color:` is paired on the same declaration (`color:#0f172a` on light fills, `color:#f8fafc` on dark fills):
+  - `classDef observed fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#0f172a;`
+  - `classDef decision fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#0f172a;`
+  - `classDef boundary fill:#e2e8f0,stroke:#334155,stroke-width:2px,stroke-dasharray:4 3,color:#0f172a;`
+  - `classDef missing fill:#fee2e2,stroke:#b91c1c,stroke-width:2px,stroke-dasharray:5 5,color:#7f1d1d;`
+- **Theme-Proof `%%{init:...}%%` Header:** Every Mermaid diagram MUST include `%%{init: {'theme': 'base', 'themeVariables': {...}}}%%` with explicit `primaryTextColor: '#0f172a'`, `edgeLabelBackground: '#f1f5f9'`, `lineColor: '#3b82f6'`, and `clusterBkg: '#f8fafc'` so diagrams remain legible in both VS Code Dark Mode and Light Mode / PDF export. For `sequenceDiagram`, wrap message exchanges in `rect rgb(248, 250, 252) ... end` with `signalColor: '#1e293b'` and `signalTextColor: '#0f172a'`.
+- **Zero Raw HTML in Markdown Tables & Mermaid:** Never use `<br>`, `<br/>`, `<b>`, or `<div>` inside Mermaid labels (use `\n`) or Markdown tables (use `; ` separators).
+- **Rich Module Traceability:** Ensure `specs/<module>/traceability_matrix.md` indexes 100% of canonical `R-<CODE>-###` rules and links polyglot references to `technical_spec.md#71-polyglot-integration-boundaries-merged-into-technical-specification` (never the removed `polyglot_boundaries.md`).
